@@ -1,0 +1,15 @@
+#1.Count how many lines there are in each file
+cat 407228326.fasta | wc -l && cat 407228412.fasta | wc -l && cat E.coli.fasta | wc -l
+
+#2.Print everything starting from the second line for the E. coli genome
+ tail -n+2 E.coli.fasta
+
+ #3.Count the sequence length of this genome
+ tail -n+2 E.coli.fasta | tr -d "\n" | wc -c
+
+ #4.Count the matches of a particular sequence, “ATGC” in the genome of E. coli (hint: Start by removing the first line and removing newline characters)
+ tail -n+2 E.coli.fasta | tr -d "\n" | grep -o "ATGC" | wc -l
+ 
+ #5.Compute the AT/GC ratio. That is, the (A+T)/(G+C) ratio (as a single number). 
+A_T=$(tail -n+2 E.coli.fasta | tr -d "\n" | grep -o [A,T] | wc -l); G_C=$(tail -n+2 E.coli.fasta | tr -d "\n" | grep -o [G,C] | wc -l); ratio=$(echo "scale=5; ($A_T) / ($G_C)" | bc); echo "$ratio"
+ 
