@@ -11,7 +11,7 @@ if [ ! -f "$1" ]; then
 fi
 
 # Define the output file name
-output_file="${1%.csv}_space.csv"
+output_file="${1%.csv}_space.txt"
 
 # replace , to space
 sed 's/,/ /g' "$1" > "$output_file"
