@@ -5,7 +5,7 @@ ls()
 class(ats)
 head(ats)
 
-png("01_time.png")
+png("../results/01_time.png")
 plot(ats$Year, ats$Temp, xlab="Year", ylab="Temperature", main="Annual Mean Temperature in Key West, Florida (20th Century)", type="l")
 dev.off()
 
@@ -25,7 +25,7 @@ for (i in 1:n_iterations) {
 }
 
 # Plot histogram of random correlation coefficients
-png("01_corr.png")
+png("../results/01_corr.png")
 hist(random_cor, breaks=30,xlim=range(c(random_cor, observed_cor)), main="Distribution of Random Correlation Coefficients", xlab="Correlation Coefficient", col="skyblue", border="black")
 abline(v=observed_cor, col="red", lwd=2)
 legend("topright", legend=c("Observed Correlation"), col=c("red"), lwd=2)
