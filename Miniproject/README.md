@@ -23,7 +23,7 @@ The code directory contains Python scripts for data preparation as well as model
   - **mymodels.py:** Two linear models and two nonlinear models are defined.
   - **model_fitting.py:** Import the model fitting dataset in mymodels.py and output the results to the result/results directory.
   - **plot_analysis.py:** For visualization and analysis of results, visualize the results under result/results and store them in result/plots.
-  - **run_MiniProject.bash:** 可以启动这个project代码，并生成pdf报告。
+  - **run_MiniProject.bash:** The project code can be started and a pdf report generated.
 - **data:** Directory to store the initial data set
   - LogisticGrowthData.csv: the dataset of courses
   - **LogisticMetaData.csv:** Introduction to the data set
