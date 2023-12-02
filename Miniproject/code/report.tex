@@ -1,0 +1,245 @@
+\documentclass[11pt]{article}
+
+\usepackage{graphicx}  % for plots
+\graphicspath{{../results/}}
+
+% to have subplots
+\usepackage{caption}  
+\usepackage{subcaption}
+
+\usepackage[margin=1in]{geometry}  % for page margin
+
+\usepackage{helvet}  % for font
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{setspace}  % for 1.5 line spacing
+\onehalfspacing
+
+\usepackage{lineno}  % for line nums
+\usepackage{booktabs} 
+\usepackage[round]{natbib}  % for better biblio
+
+\usepackage{authblk}  % for author affiliation
+\title{Comparative Efficacy of Different Mathematical Models in Predicting Bacterial Growth Dynamics}
+\author{Hongyuan Guo}
+\affil{Imperial College London}
+\date{30 November 2023}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\renewenvironment{abstract}
+  {\section*{\abstractname}} 
+  {}
+
+\renewenvironment{abstract}
+ {\begin{center}\bfseries\abstractname\end{center}}
+ {}
+
+\begin{document}
+
+    \begin{titlepage}
+    \maketitle
+    \thispagestyle{empty}
+    
+    \begin{center}
+        Word count: 3402
+    \end{center}
+    
+    \end{titlepage}
+
+    \begin{linenumbers}
+    
+    \begin{abstract}
+
+In various industries, accurately predicting bacterial growth is essential for ensuring product safety, optimizing production processes, and controlling the spread of diseases. We have utilized a dataset of experimental results from laboratories worldwide. This dataset focuses on recording the changes in biomass or microbial quantities over time. We employed four models to attempt fitting the curve of bacterial growth over time, and we used AICc (Akaike Information Criterion corrected) and BIC (Bayesian Information Criterion) to infer which model better fits the dataset. However, it's important to note that this experiment is based only on the dataset's conditions and is a simulation. In real-world applications, it's necessary to consider various environmental factors to determine the best model.
+
+    \end{abstract}
+
+
+    \section{Introduction}
+In biological research, exploring the growth rate of populations is not only the cornerstone of understanding ecosystem dynamics but also a key factor in predicting the impact of environmental changes. The growth rate of a biological population reflects its efficiency in resource utilization and its competitiveness within its ecological niche\citep{sibly2002population}. Moreover, the study of growth rates has broad applications in agriculture, environmental protection, and public health\citep{calka2022ratio}. For example, it can guide pesticide use by predicting the breeding speed of pests, or help control the outbreak of infectious diseases by monitoring the growth of pathogens\citep{semenza2022climate}\citep{fisman2022impact}.
+
+Microorganisms, often used as models in population growth studies\citep{ismatova2022research}, reproduce rapidly and are sensitive to environmental changes, making them ideal subjects for understanding biological growth dynamics. With the convenience of global data sharing, microbial growth data from different laboratories provide a valuable resource for studying microbial growth patterns. These data not only help reveal the growth patterns of microorganisms under various environmental conditions but also test and improve the predictive power of various growth models.
+
+In this context, our study chose a dataset named LogisticGrowthData.csv, containing records of microbial biomass over time collected from laboratories worldwide. Before analyzing these data, we performed necessary data preprocessing to remove unreasonable records, such as negative values and illegal characters in time fields, as well as negative and missing values of population biomass. Our goal was to divide the dataset into 285 subsets using unique identifiers, each representing an independent microbial population, to study their growth patterns.
+
+During the data processing and analysis, we used Python 3.8.18 as our primary programming language and employed libraries like matplotlib, lmfit, pandas, and numpy to assist our work. We also wrote bash scripts to automate the entire research process, enhancing efficiency and reproducibility.
+
+This study evaluated four different models - two linear (Cubic and Quadratic) and two nonlinear (Logistic\citep{peleg_modeling_1997}\citep{fujikawa_new_2004} and Gompertz\citep{chatterjee_antibacterial_2015}\citep{buchanan_when_1997}) - to fit the microbial population growth data. We compared these 
+models' abilities to fit microbial growth data and analyzed their statistical metrics (like AICc, BIC, and $R^2$ values) to assess their performance.
+
+Our results showed that among the 248 datasets that could be fitted by all models, the nonlinear models often had lower AICc values in most cases, suggesting they might provide a better fit. Moreover, the Gompertz model performed particularly well when considering BIC. By comparing the fitting effects and statistical metrics of each model, we sought to answer the following specific questions:
+\begin{enumerate}
+    \item Among different types of growth models, which one can most accurately describe the growth dynamics of microorganisms?
+    \item In model selection, how can statistical metrics help us evaluate the quality of the models' fit?
+\end{enumerate}
+
+With these questions raised, our study aims not only to compare the efficacy of different models but also to deepen our understanding of microbial growth patterns and improve the predictive accuracy of growth models. Through this study, we hope to provide more precise tools for biological research, especially in fields where predicting and controlling microbial growth is needed.
+
+
+    \section{Methods}
+
+        \subsection{Data}
+
+In our analysis, we primarily focused on a dataset named LogisticGrowthData.csv. This dataset concentrates on recording the changes in biomass or the number of microorganisms over time, with the data originating from experimental results of laboratories across the globe. The relevant field names are specified by a file named LogisticGrowthMetaData.csv, which is also stored in the data repository. Our research mainly revolves around two fields: ``PopBio'' (representing population biomass) and ``Time''.
+
+In the original dataset, we encountered negative values and illegal characters in the ``Time'' field, as well as negative and missing values in the PopBio values. We first preprocessed the dataset to handle these unreasonable records. We then distinguished each independent population growth curve using a specific identifier. This identifier is a unique string variable formed by concatenating information about the temperature, species, culture medium, references, and repetitions of each curve. Utilizing these composite identifiers, we divided the dataset into 285 subsets, each representing an independent population. Additionally, we mapped the quantity of biomass to the logarithmic space.
+
+
+        \subsection{Models}
+
+            \begin{equation}
+                N_t = B_0 + B_1 t + B_2 t^2
+                \label{eq:quadratic}
+            \end{equation}
+            
+            \begin{equation}
+                N_t = B_0 + B_1 t + B_2 t^2 + B_3 t^3
+                \label{eq:cubic}
+            \end{equation}
+            \begin{equation}
+                N_t = \frac{N_0 K e^{rt}}{N_{max} + N_0 (e^{rt} - 1)}
+                \label{eq:logistic}
+            \end{equation}
+            \begin{equation}
+                log(N_t) = N_0 + (N_{max} - N_0) e^{-e^{r_{max} \cdot exp(1) \frac{t_{lag} - t}{(N_{max} - N_0) log(10)}+1}}
+                \label{eq:gompertz}
+            \end{equation}
+
+            In our experiment, we utilized a total of four models: two linear models, Cubic and Quadratic, and two nonlinear models, Logistic and Gompertz. We will now introduce these four models. The formulas for these four models are shown as equations (Equations \ref{eq:cubic},\ref{eq:quadratic}, \ref{eq:gompertz}, \ref{eq:logistic}), where $N_t$ represents the number of bacteria at time $t$. We use these models to fit the relationship of bacterial growth over time to better understand the patterns of bacterial growth.
+            \begin{enumerate}
+                \item Quadratic, Equation (\ref{eq:quadratic}) represents the mathematical formula of our linear model Quadratic. It is a linear model containing three parameters $B_0$, $B_1$, $B_2$.
+                \item Cubic, Equation (\ref{eq:cubic}) represents the mathematical formula of our linear model Cubic. This is also a linear model, but it contains four parameters $B_0$, $B_1$, $B_2$, $B_3$.
+                \item Logistic, Equation (\ref{eq:logistic}) is the mathematical formula for our nonlinear model Logistic. Here, N0 represents the initial number of bacteria, r\_max represents the maximum growth rate, and Nmax denotes the maximum carrying capacity of the environment for the bacteria.
+                \item Gompertz, this model also uses $r_{max}$ as the maximum growth rate, $N_{max}$ for the environment's maximum carrying capacity, $N_0$ for the initial number of bacteria, and $t_{lag}$ represents the delay time before the count starts exponential growth.
+            \end{enumerate}
+        \subsection{Evaluation indicators}
+        We employed the following four evaluation metrics to assess the model's fitting ability:
+
+        AIC is a criterion based on information theory, proposed by Hirotugu Akaike in the 1970s. It is used for statistical model selection, aiming to find the best balance between model fit and complexity. AIC assists researchers in selecting models that accurately describe data without being overly complex. AIC particularly emphasizes avoiding overfitting. It does so by penalizing the number of parameters in the model, thereby encouraging the selection of simpler and more effective models.
+        
+        AICc is a corrected version of AIC, mainly used in situations with small sample sizes. It adds a correction term to AIC to better address model selection issues in small sample data. AICc is particularly useful in small sample scenarios because standard AIC might choose overly complex models when the sample size is close to the number of parameters. AICc reduces this risk by including an additional correction term.
+        
+        $R^2$ is a statistical measure used to assess a model's fit, commonly applied in linear regression analysis. It represents the percentage of the variance in the model that is explained by the independent variables, providing a quantified indicator of the model's fitting quality. A major advantage of $R^2$ is its intuitiveness and ease of understanding. A high $R^2$ value typically means the model explains the data well. However, it also has limitations, such as not being suitable for evaluating nonlinear models or complex multivariate models.
+        
+        BIC, also known as the Bayesian Information Criterion, is a criterion used for model selection. Similar to AIC, it seeks a balance between model complexity and fit, but places a heavier penalty on model complexity in large sample data, emphasizing the avoidance of overly complex models. This makes BIC more reliable than AIC in certain situations, especially with large sample sizes.
+        
+        Given that each of our subsets has a relatively small sample size, we have chosen AICc, $R^2$, and BIC as our primary metrics to evaluate the fitting ability of our model.
+        \subsection{Model Fitting}
+        The definition of our models is conducted using Python's lmfit library, followed by fitting each sub-dataset individually. For initial parameters, our $N_0$ is set as the minimum value in each sub-dataset, $N_{max}$ as the maximum value in each dataset, r\_max as the maximum slope value between two consecutive points in the sub-dataset, and $t_{lag}$ is represented by the intersection of the tangent line at the point of maximum slope with the x-axis. These are just their initial values, subject to updates through continuous iterations of the model to fit the final data. During the model fitting process, instances of fit failure might occur, for which we employ try statements for error handling.
+
+        After fitting each sub-dataset, we record the model's AICc, AIC, BIC, and $R_2$ values for subsequent optimal model selection and evaluation. Additionally, to enhance the visualization of our model, we use the parameters from the fitted model to generate dependent variable y for a series of independent variables x, and display these using matplotlib for a clearer observation of the model's fitting quality.
+        
+        
+        \subsection{Computing Tools}
+        For our project, we have chosen Python 3.8.18 as our primary programming language due to its robust capabilities and widespread adoption in data analysis and scientific computing. Python's versatility and readability make it an excellent choice for complex data manipulation and analysis tasks.
+
+We utilize a suite of powerful libraries in our project:
+\begin{enumerate}
+    \item Numpy: This is one of the fundamental packages for numerical computing in Python. It provides support for large, multi-dimensional arrays and matrices, along with a collection of high-level mathematical functions to operate on these arrays. Numpy is renowned for its efficiency and is used extensively in data processing, linear algebra, Fourier transform, and random number capabilities.
+    \item Pandas: This library is pivotal for data manipulation and analysis. It offers data structures and operations for manipulating numerical tables and time series. Pandas is particularly adept at handling and analyzing input data, especially when it comes to cleaning, transforming, and aggregating large datasets.
+    \item Lmfit: This is a powerful and flexible library for nonlinear least-squares minimization and curve fitting in Python. Lmfit extends the capabilities of scipy's optimization and minimization functions, adding a more user-friendly interface to define a model and its parameters, perform the fitting, and inspect the results.
+    \item Matplotlib: A widely used plotting library in Python, matplotlib is excellent for creating static, interactive, and animated visualizations in Python. It's highly customizable and works well for a wide range of plotting formats and types, from histograms and bar charts to complex scatter plots.
+\end{enumerate}
+
+
+Alongside these Python libraries, we have also developed a bash script (version 4.4.20(1)). This script is designed to automate the execution of our entire project, enabling a 'one-click' run approach. The bash scripting language, known for its effectiveness in automating repetitive tasks, complements our Python code by streamlining the overall process of data analysis. It simplifies the execution process, making the project more user-friendly, particularly for those who may not be as familiar with the intricacies of Python programming. This integration of bash scripting with Python illustrates our commitment to creating a seamless and efficient workflow for our project.
+
+            
+
+    \section{Results}
+        In the fitted results of our 285 subsets, as illustrated Fig.\ref{fig:overview_count}, for linear models, the Quadratic model can fit 277 datasets, and the Cubic model can fit 272. For nonlinear models, Logistic and Gompertz can fit 261 and 265 datasets, respectively. Overall, the number of subsets that each of the four models can fit is relatively similar, with linear models slightly outperforming nonlinear models. In subsequent experiments, we excluded those datasets that could not be fitted by all four models, focusing only on the datasets that could be fitted by all four models, totaling 248.
+
+         \begin{figure}[ht!]
+            \centering
+            \includegraphics[width=0.57\linewidth]{../result/plots/overview_count.png}
+            \caption{The number of fits each model can have for all the subdata sets}
+            \label{fig:overview_count}
+        \end{figure}
+        
+         \begin{figure}[ht!]
+            \centering
+            \includegraphics[width=0.57\linewidth]{../result/plots/best_aicc_bic_count.png}
+            \caption{When AICc and BIC are considered as indicators of model fitting respectively, the number of data sets that each model is most suitable for (only data sets that can be fully fitted are considered).}
+            \label{fig:best_aicc_bic_count}
+        \end{figure}
+        As shown in the Fig.\ref{fig:best_aicc_bic_count}, to evaluate which model fits the dataset more accurately, among the 248 datasets that all models could fit, when considering AICc, it was observed that the Logistic model was more frequently suitable for fitting the datasets (Logistic: 116 times, Gompertz: 84 times, Quadratic: 27 times, Cubic: 21 times). However, when considering BIC, the Gompertz model was more appropriate for the datasets (Gompertz: 126 times, Logistic: 66 times, Cubic: 40 times, Quadratic: 16 times).
+
+
+        Regarding the fitting of models, we illustrate with the fitting results of two subsets. For the Fig.\ref{fig:dataset1.png}, it can be seen that the nonlinear models, Logistic and Gompertz, fit the dataset particularly well. In the Fig.\ref{fig:dataset100.png}, all four models - Logistic, Gompertz, Quadratic, and Cubic - are observed to fit the dataset effectively.
+            \begin{figure}[h]
+            \centering
+            \begin{subfigure}[a]{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{../result/plots/subset1.png}
+                \caption{}
+                \label{fig:dataset1.png}
+            \end{subfigure}
+            \hfill
+            \begin{subfigure}[a]{0.45\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{../result/plots/subset100.png}
+                \caption{}
+                \label{fig:dataset100.png}
+            \end{subfigure}
+            \caption{The fit of four models to two of the data sets(only consider data sets that can be fitted by all 4 models, in the Log space).}
+            \label{fig:both growth plots}
+        \end{figure}
+        
+        \begin{figure}[ht!]
+            \centering
+            \includegraphics[width=0.57\linewidth]{../result/plots/overview_aicc.png}
+            \caption{AICc values calculated by different models for each subdataset fit (only consider data sets that can be fitted by all 4 models, in the Log space).}
+            \label{fig:overview_aicc}
+        \end{figure}        
+In the 248 datasets that all models could fit, when observing the distribution of AICc values for each model see Fig.\ref{fig:overview_aicc}, it is noticeable that the median AICc values of the Logistic model and the Gompertz model are lower compared to the Cubic and Quadratic models. This suggests that they might be better-performing models. At the same time, the Logistic model has fewer outliers, whereas the Gompertz model exhibits a greater number of outliers.
+
+Among the 248 datasets that all models could fit, regarding the distribution of $R^2$ values for each model, the median $R^2$ values of the Logistic model and the Gompertz model are observed to be higher compared to the Cubic and Quadratic models see Fig.\ref{fig:r_2}. Notably, the Quadratic model exhibits the lowest values, indicating that it indeed struggles to fit most of the datasets effectively. This suggests that the Logistic and Gompertz models might be better performers. Additionally, the Logistic model has fewer outliers, while the Gompertz model shows a greater number of outliers.
+        \begin{figure}[ht!]
+            \centering
+            \includegraphics[width=0.57\linewidth]{../result/plots/overview_r2.png}
+            \caption{$R_2$ values calculated by different models for each subdataset fit (only consider data sets that can be fitted by all 4 models, in the Log space).}
+            \label{fig:r_2}
+        \end{figure}
+                
+\begin{table}[ht]
+    \centering
+    \caption{Average AICc, BIC, $R^2$ for each model after fitting all subdatasets(only consider data sets that can be fitted by all 4 models, in the Log space).}
+    \begin{tabular}{lcccc} % 
+    \toprule
+    indicators & Cubic & Quadratic & Logistic & Gompertz \\
+    \midrule
+    AICc & -23.2805 & -20.6732 & -33.1987 & -35.5090 \\
+    BIC & -32.0115 & -23.5211 & -36.0467 & -44.2400 \\
+    $R^2$ & 0.8166 & 0.6782 & 0.7400 & 0.8893 \\
+    \bottomrule
+    \end{tabular}
+    \label{tab:mean}
+\end{table}
+
+    Finally, we present the average values of the evaluation metrics AICc, BIC, $R^2$ for each model see Table.\ref{tab:mean}. It can be observed that Logistic and Gompertz have lower AICc and BIC compared to Cubic and Quadratic. Additionally, it is found that the Quadratic model has the poorest performance across all three metrics among all the models.
+
+
+    \section{Discussion}
+In our study, we first address the two primary questions posed at the outset of the article: (1) Among various types of growth models, which one most accurately describes the dynamics of microbial growth? (2) How do statistical indicators assist us in assessing the fit quality of a model? When considering the Akaike Information Criterion corrected (AICc), the Logistic model emerged as the best fit. However, when considering the Bayesian Information Criterion (BIC) as the fitting indicator, the Gompertz model proved to be superior. Additionally, it was observed that linear models did not perform as well in fitting bacterial growth curves as nonlinear models. The choice of statistical indicators often depends on the practical application, with AICc being particularly suitable for cases with smaller sample sizes or when the number of parameters is close to the sample size. It takes into account both the complexity of the model (number of parameters) and the degree to which the model fits the data. BIC, similar to AIC, also considers model complexity and data fit but imposes a stricter penalty on model complexity, making it suitable for larger sample sizes.
+
+Our research primarily focused on comparing and assessing the effectiveness of different mathematical models in fitting microbial growth data. Our key findings revealed significant advantages of nonlinear models, especially Logistic and Gompertz models, in depicting microbial growth dynamics. This conclusion is based on several key analyses and evaluations. Firstly, nonlinear models, such as Logistic and Gompertz, demonstrated a more accurate fitting capability for microbial growth data. This fitting ability is evident not only in the statistical indices of the models but also in their biological interpretability. Specifically, these nonlinear models exhibited lower Akaike Information Criterion corrected (AICc) values in fitting microbial growth curves compared to other models. AICc is a standard for assessing model fit quality, particularly suited for smaller sample sizes or when the number of parameters approximates the sample size. Lower AICc values indicate the statistical superiority of the model, i.e., the best data fit with the least possible use of parameters. Furthermore, the Gompertz model showed greater advantages in terms of the Bayesian Information Criterion (BIC). BIC, another commonly used standard for model selection, evaluates the model while considering sample size, imposing stricter penalties on model complexity. The notable performance of the Gompertz model in terms of BIC implies its effectiveness in capturing and describing key trends in the data while maintaining fewer parameters, particularly important for large datasets.
+
+These findings have significant implications in multiple fields, including microbial ecology, population dynamics, disease control, public health, agriculture, and food safety. Firstly, in the realm of microbial ecology and population dynamics, your study enhances our understanding of the role of microbes in ecosystems, including their critical roles in nutrient cycling and organic matter decomposition. Additionally, by analyzing the interactions among microbes and the impact of environmental changes on them, your study provides deeper insights into ecological balance. In terms of disease control and public health, your research offers vital tools for the prevention and control of infectious diseases by providing accurate microbial growth models, and also serves as a reference for the development of antibiotics and vaccines. These outcomes further support the formulation of public health policies, especially in managing epidemics and pandemics. In the agricultural sector, your research aids in enhancing the efficiency of crop disease management, and by understanding the contribution of soil microbes to soil fertility, it promotes the optimization of ecosystem services. Moreover, your research supports the application of agricultural biotechnology, such as the development of biofertilizers and biopesticides. In the aspect of food safety, your research helps in predicting the shelf life of food products, thereby reducing food spoilage and waste. It also facilitates the optimization of food processing and contributes to the establishment of stricter food safety standards.
+
+However, the methods and results of our study also have certain limitations. Firstly, although data preprocessing improved data quality, the diversity in data collection and inconsistency in experimental conditions might affect the universality of the models. Secondly, the process of model selection and evaluation relies on existing statistical criteria, which do not always fully capture the biological effectiveness of the models. Additionally, our analysis did not cover all possible environmental factors that could influence microbial growth, and the datasets used primarily came from specific experimental conditions or types of microbes, which might limit the general applicability of our findings. Microbial growth is influenced by a variety of environmental factors, and data from different environments might lead to different model performances. The model selection and evaluation, depending on specific statistical standards like AICc and BIC, though widely used, may not always reflect the biological validity of the models or the needs of actual application scenarios. The reproducibility and consistency of microbial experiments are challenging. Minor differences in experimental conditions, such as temperature, pH, or nutrient composition adjustments, can significantly affect microbial growth and, consequently, the fit of the models. The research might focus on specific stages of microbial growth, like the exponential phase, without fully considering the entire lifecycle, including lag, stationary, and decline phases. All models are based on certain assumptions and simplifications, which might limit their predictive accuracy in complex, dynamic, and unpredictable real-world scenarios.
+
+Future work could involve collecting a more extensive and diverse range of datasets, including various environmental conditions, types of microbes, and different growth stages. This would aid in understanding the applicability and limitations of models in different contexts. The expansion of datasets should also include a more comprehensive consideration of environmental factors, such as temperature, humidity, pH levels, and availability of nutrients, all of which are crucial for microbial growth. Research could explore new methods that combine existing models or develop entirely new models to better simulate the complexity of microbial growth. Innovative models should not only be able to describe the growth curves of microbes but also predict different stages of microbial growth, particularly considering models for the death phase, which may offer more insights into the microbial lifecycle. Applications of microbial growth models extend beyond biological research to fields like medicine, agriculture, and environmental science. In medicine, models could be used to study the spread of pathogens and the effectiveness of antibiotics. In agriculture, they could be used to optimize growth conditions for crops and manage diseases.
+
+In conclusion, based on our experiments, we determine that considering AICc, the Logistic model is the best fitting model, but when considering BIC as the fitting indicator, the Gompertz model is superior. At the same time, linear models do not perform as well in fitting bacterial growth curves as nonlinear models. Our research provides a new perspective on the selection and evaluation of microbial growth models, highlighting the potential advantages of nonlinear models in describing microbial growth data. These findings have practical application values in fields like biological research, disease prevention and control, and agricultural production. Future studies will further deepen our understanding of microbial growth dynamics and provide more precise predictive tools for related fields.
+
+
+    \bibliographystyle{agsm}
+    \bibliography{mybibs}
+    
+    
+    \end{linenumbers}
+
+\end{document}
