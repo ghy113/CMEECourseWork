@@ -1,0 +1,66 @@
+Starting code feedback for Hongyuan, Week6
+
+Current Points = 100
+
+Note that: 
+(1) Major sections begin with a double "====" line 
+(2) Subsections begin with a single "====" line 
+(3) Code output or text file content are printed within single "*****" lines 
+
+======================================================================
+======================================================================
+Your Git repo size this week is about 32.92 MiB on disk 
+
+PART 1: Checking project workflow...
+
+Found the following directories in parent directory: HPC, .git, week1, MiniProject, week2, Feedback, week3, week7
+
+Found the following files in parent directory: README.md, .DS_Store
+
+Checking for key files in parent directory...
+
+.gitignore missing, 1 pt deducted
+
+Current Points = 99
+
+Found README in parent directory, named: README.md
+
+Printing contents of README.md:
+
+**********************************************************************
+# My CMEECoursework Repository
+
+## Description
+
+This repository contains all CMEE coursework files.
+
+## Languages
+
+Python, R, Jupyter, Latex, Shell
+
+## Author name and contact
+
+Name: Hongyuan Guo
+
+Email: hg2423@ic.ac.uk
+**********************************************************************
+
+======================================================================
+Looking for the weekly directories...
+
+Found 4 weekly directories: week1, week2, week3, week7
+
+The Week6 directory will be assessed 
+
+======================================================================
+======================================================================
+PART 2: Checking weekly code and workflow...
+
+======================================================================
+======================================================================
+
+FINISHED WEEKLY ASSESSMENT
+
+Current Points for the Week = 99
+
+NOTE THAT THESE ARE POINTS, NOT MARKS FOR THE WEEK!

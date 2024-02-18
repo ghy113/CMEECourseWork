@@ -1,0 +1,578 @@
+Starting code feedback for Hongyuan, Week1
+
+Current Points = 100
+
+Note that: 
+(1) Major sections begin with a double "====" line 
+(2) Subsections begin with a single "====" line 
+(3) Code output or text file content are printed within single "*****" lines 
+
+======================================================================
+======================================================================
+Your Git repo size this week is about 32.92 MiB on disk 
+
+PART 1: Checking project workflow...
+
+Found the following directories in parent directory: HPC, .git, week1, MiniProject, week2, Feedback, week3, week7
+
+Found the following files in parent directory: README.md, .DS_Store
+
+Checking for key files in parent directory...
+
+.gitignore missing, 1 pt deducted
+
+Current Points = 99
+
+Found README in parent directory, named: README.md
+
+Printing contents of README.md:
+
+**********************************************************************
+# My CMEECoursework Repository
+
+## Description
+
+This repository contains all CMEE coursework files.
+
+## Languages
+
+Python, R, Jupyter, Latex, Shell
+
+## Author name and contact
+
+Name: Hongyuan Guo
+
+Email: hg2423@ic.ac.uk
+**********************************************************************
+
+======================================================================
+Looking for the weekly directories...
+
+Found 4 weekly directories: week1, week2, week3, week7
+
+The Week1 directory will be assessed 
+
+======================================================================
+======================================================================
+PART 2: Checking weekly code and workflow...
+
+======================================================================
+Assessing WEEK1...
+
+Found the following directories: sandbox, results, data, code
+
+Found the following files: .gitkeep, README.md, .DS_Store
+
+Checking for readme file in weekly directory...
+
+Found README in parent directory, named: README.md
+
+Printing contents of README.md:
+
+**********************************************************************
+# Computing week1
+## Description	
+This directory contains all shell scripts for coursework week1 in shell scripting and scientific documents with Latex.
+## Languages
+Bash,Latex
+
+## Project structure and Usage
+- **CompileLaTeX.sh**: A script to compile latex with bibtex.
+- **ConcatenateTwoFiles.sh**: Concatenate the contents of two files to a merged file.
+- **countlines.sh**: Count number of lines of a file.
+- **csvtospace.sh**: Substitute commas in the files space the save the output into a a space separated .txt file
+- **tabtocsv.sh**: substitute the tabs in the files with commas then saves the output into a .csv file
+- **tiff2png.sh**: Convert a .tif image into .png image; or convert all .tif images in the input directory to .png files.
+- **variables.sh**: Examples for usage of variables.
+- **UnixPrac1.txt**: UNIX shell commands for reading .fasta files.
+## Author name and contact  
+Name:Hongyuan Guo
+
+Email:hg2423@ic.ac.uk
+**********************************************************************
+
+Results directory is empty - good! 
+
+Found 11 code files: csvtospace.sh, FirstExample.tex, CompileLaTeX.sh, tiff2png.sh, boilerplate.sh, ConcatenateTwoFiles.sh, tabtocsv.sh, MyExampleScript.sh, variables.sh, CountLines.sh, UnixPrac1.txt
+
+Found the following extra files: FirstExample.pdf
+0.5 pt deducted per extra file
+
+Current Points = 98.5
+
+======================================================================
+Testing script/code files...
+
+======================================================================
+Inspecting script file csvtospace.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/bash
+# Check if the correct number of arguments is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 filename.csv"
+    exit 1
+fi
+# Check if the input file exists
+if [ ! -f "$1" ]; then
+    echo "Input file not found: $1"
+    exit 1
+fi
+
+# Define the output file name
+output_file="${1%.csv}_space.txt"
+
+# replace , to space
+sed 's/,/ /g' "$1" > "$output_file"
+
+echo "Conversion complete. Saved as $output_file"
+**********************************************************************
+
+Testing csvtospace.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+Usage: csvtospace.sh filename.csv
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.00545s
+
+======================================================================
+Inspecting script file FirstExample.tex...
+
+File contents are:
+
+**********************************************************************
+\documentclass[12pt]{article}
+
+\title{A Simple Document}
+
+\author{Hongyuan Guo}
+
+\date{}
+
+\begin{document}
+  \maketitle
+  
+  \begin{abstract}
+    This paper analyzes a seminal equation in population biology.
+  \end{abstract}
+  
+  \section{Introduction}
+    Blah Blah
+  
+  \section{Materials \& Methods}
+  
+  A foundational equation of population biology is:
+  
+  \begin{equation}
+    \frac{dN}{dt} = r N (1 - \frac{N}{K})
+  \end{equation}
+  
+  It was first proposed by Verhulst in 1838 \cite{verhulst1838notice}.
+  
+  \bibliographystyle{plain}
+  
+  \bibliography{FirstBiblio}
+
+\end{document}
+**********************************************************************
+
+Testing FirstExample.tex...
+
+======================================================================
+Inspecting script file CompileLaTeX.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/bash
+
+# Detect whether the user has entered a file path
+if [ "$#" -eq 0 ]; then
+  printf "\nError: Needs a latex filename as input\n"
+  exit 1
+fi
+
+# The file path entered is not a file that ends in tex
+if [ "${1: -4}" != ".tex" ]; then
+  printf "\nError: Need to input a template file that ends in a .tex file\n"
+  exit 1
+fi
+
+# Get the filename without suffix
+fbasename=$(echo "$1" | cut -f 1 -d '.')
+
+pdflatex -halt-on-error -output-directory . -synctex=1 $1
+bibtex $fbasename
+pdflatex -halt-on-error -output-directory . -synctex=1 $1
+pdflatex -halt-on-error -output-directory . -synctex=1 $1
+
+if [ "$2" == "view" ]; then
+  if [ -s "$fbasename.pdf" ]; then
+    evince "$fbasename.pdf" &
+  else
+    echo "$fbasename.pdf is empty!"
+  fi
+fi
+
+## Cleanup
+rm *.aux
+rm *.log
+rm *.bbl
+rm *.blg
+**********************************************************************
+
+Testing CompileLaTeX.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+
+Error: Needs a latex filename as input
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.00372s
+
+======================================================================
+Inspecting script file tiff2png.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/bash
+
+for f in *.tif; 
+    do  
+        echo "Converting $f"; 
+        convert "$f"  "$(basename "$f" .tif).png"; 
+    done
+**********************************************************************
+
+Testing tiff2png.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+Converting *.tif
+
+**********************************************************************
+
+Encountered error (or warning):
+
+***IGNORE IF THIS ERROR IS EXPECTED AS PART OF AN IN-CLASS EXERCISE***
+
+convert-im6.q16: unable to open image `*.tif': No such file or directory @ error/blob.c/OpenBlob/2924.
+convert-im6.q16: no images defined `*.png' @ error/convert.c/ConvertImageCommand/3229.
+
+======================================================================
+Inspecting script file boilerplate.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/sh
+# Author: hg2423@ic.ac.uk
+# Script: boilerplate.sh
+# Desc: simple boilerplate for shell scripts
+# Arguments: none
+# Date: Oct 2023
+
+echo -e "\nThis is a shell script! \n"
+
+#exit
+**********************************************************************
+
+Testing boilerplate.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+
+This is a shell script! 
+
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.00220s
+
+======================================================================
+Inspecting script file ConcatenateTwoFiles.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/bash
+
+# deal with exception or error 
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 filepath1 filepath2"
+    exit 1
+fi
+
+file1="$1"
+file2="$2"
+
+# check file whether exists
+if [ ! -f "$file1" ]; then
+    echo "file '$file1' not found"
+    exit 1
+fi
+
+if [ ! -f "$file2" ]; then
+    echo "file '$file2' not found"
+    exit 1
+fi
+
+
+cat $1 > $3
+cat $2 >> $3
+echo "Merged File is"
+cat $3
+
+**********************************************************************
+
+Testing ConcatenateTwoFiles.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+Usage: ConcatenateTwoFiles.sh filepath1 filepath2
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.00202s
+
+======================================================================
+Inspecting script file tabtocsv.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/sh
+# Author: hg2423@ic.ac.uk
+# Script: tabtocsv.sh
+# Description: substitute the tabs in the files with commas
+#
+# Saves the output into a .csv file
+# Arguments: 1 -> tab delimited file
+# Date: Oct 2019
+
+# add deal with expection or error
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 filename.csv"
+    exit 1
+fi
+# Check if the input file exists
+if [ ! -f "$1" ]; then
+    echo "Input file not found: $1"
+    exit 1
+fi
+
+echo "Creating a comma delimited version of $1 ..."
+cat $1 | tr -s "\t" "," >> $1.csv
+echo "Done!"
+exit
+**********************************************************************
+
+Testing tabtocsv.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+Usage: tabtocsv.sh filename.csv
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.00242s
+
+======================================================================
+Inspecting script file MyExampleScript.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/sh
+
+MSG1="Hello"
+MSG2=$USER
+echo "$MSG1 $MSG2"
+echo "Hello $USER"
+echo
+**********************************************************************
+
+Testing MyExampleScript.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+Hello mhasoba
+Hello mhasoba
+
+
+**********************************************************************
+
+Code ran without errors
+
+Time consumed = 0.00272s
+
+======================================================================
+Inspecting script file variables.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/sh
+
+## Illustrates the use of variables 
+
+# Special variables
+
+echo "This script was called with $# parameters"
+echo "The script's name is $0"
+echo "The arguments are $@"
+echo "The first argument is $1"
+echo "The second argument is $2"
+
+# Assigned Variables; Explicit declaration:
+MY_VAR='some string' 
+echo 'the current value of the variable is:' $MY_VAR
+echo
+echo 'Please enter a new string'
+read MY_VAR
+echo
+echo 'the current value of the variable is:' $MY_VAR
+echo
+
+## Assigned Variables; Reading (multiple values) from user input:
+echo 'Enter two numbers separated by space(s)'
+read a b
+echo
+echo 'you entered' $a 'and' $b '; Their sum is:'
+
+## Assigned Variables; Command substitution
+MY_SUM=$(expr $a + $b)
+echo $MY_SUM
+**********************************************************************
+
+Testing variables.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+This script was called with 0 parameters
+The script's name is variables.sh
+The arguments are 
+The first argument is 
+The second argument is 
+the current value of the variable is: some string
+
+Please enter a new string
+
+the current value of the variable is:
+
+Enter two numbers separated by space(s)
+
+you entered and ; Their sum is:
+
+
+**********************************************************************
+
+Encountered error (or warning):
+
+***IGNORE IF THIS ERROR IS EXPECTED AS PART OF AN IN-CLASS EXERCISE***
+
+expr: syntax error: missing argument after ‘+’
+
+======================================================================
+Inspecting script file CountLines.sh...
+
+File contents are:
+
+**********************************************************************
+#!/bin/bash
+
+NumLines=`wc -l < $1`
+echo "The file $1 has $NumLines lines"
+echo
+**********************************************************************
+
+Testing CountLines.sh...
+
+Output (only first 500 characters): 
+
+
+**********************************************************************
+The file  has  lines
+
+
+**********************************************************************
+
+Encountered error (or warning):
+
+***IGNORE IF THIS ERROR IS EXPECTED AS PART OF AN IN-CLASS EXERCISE***
+
+CountLines.sh: line 3: $1: ambiguous redirect
+
+======================================================================
+Inspecting script file UnixPrac1.txt...
+
+File contents are:
+
+**********************************************************************
+#1.Count how many lines there are in each file
+cat 407228326.fasta | wc -l && cat 407228412.fasta | wc -l && cat E.coli.fasta | wc -l
+
+#2.Print everything starting from the second line for the E. coli genome
+ tail -n+2 E.coli.fasta
+
+ #3.Count the sequence length of this genome
+ tail -n+2 E.coli.fasta | tr -d "\n" | wc -c
+
+ #4.Count the matches of a particular sequence, “ATGC” in the genome of E. coli (hint: Start by removing the first line and removing newline characters)
+ tail -n+2 E.coli.fasta | tr -d "\n" | grep -o "ATGC" | wc -l
+ 
+ #5.Compute the AT/GC ratio. That is, the (A+T)/(G+C) ratio (as a single number). 
+A_T=$(tail -n+2 E.coli.fasta | tr -d "\n" | grep -o [A,T] | wc -l); G_C=$(tail -n+2 E.coli.fasta | tr -d "\n" | grep -o [G,C] | wc -l); ratio=$(echo "scale=5; ($A_T) / ($G_C)" | bc); echo "$ratio"
+ 
+**********************************************************************
+
+Testing UnixPrac1.txt...
+
+======================================================================
+======================================================================
+Finished running scripts
+
+Ran into 3 errors
+
+======================================================================
+======================================================================
+
+FINISHED WEEKLY ASSESSMENT
+
+Current Points for the Week = 98.5
+
+NOTE THAT THESE ARE POINTS, NOT MARKS FOR THE WEEK!
